@@ -1,3 +1,4 @@
+CREATE database IF NOT EXISTS `csci430`;
 use csci430;
 
 CREATE TABLE IF NOT EXISTS `user` (
