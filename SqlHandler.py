@@ -1,6 +1,8 @@
 import mysql
 import json
-
+import bcrypt
+from random import randint
+from time import sleep
 
 # Make a json file named sqlconfig.txt, it will have these values
 #  
@@ -24,21 +26,45 @@ class SqlHandler:
     def register(self, username, password, ipaddress):
         ''' 
             1) check if username already exists, if it does throw exception
+            try:
+                cursor = self.cursor()
+                query = "SELECT username FROM user WHERE username = " + username
+                cursor.execute(query)
+                rows = cursor.fetchall()
             2) if not, generate salt
             3) add salt to password
             4) hash password
+                if len(rows) > 0:
+                    raise Exception("Data already exists")
+                hashedpw = bcrypt.hashpw(password, bcrypt.gensalt(12))
             5) add username, hashed password, non-hashed ip to database
+                query1 = "INSERT INTO user(username, password, ipaddress) VALUES (%s,%s,%s)"
+                insdata = (username, hashedpw, ipaddress)
+                cursor.execute(query1, insdata)
             6) create session for this user, return user object by using getUserByCookie
+                getUserByCookie(self, ~, ipaddress)
+            except:
+            printf("Data already exists")
         '''
     
     def login(self, username, password, ipaddress):
         ''' 
             0) delay a small, random amount of time
+            sleep(randint(10,100))
             1) check if username already exists, if not, throw exception
+            try:
+                cursor = self.cursor()
+                query = "SELECT password FROM user WHERE username = " + username
+                cursor.execute(query)
+                rows = cursor.fetchall()
+                if len(rows) == 0:
+                    raise Exception("User doesn't exist")
             2) if it does, get the user's salt
+                hashed_password = rows[0] 
             3) add salt to password
             4) hash password
             6) check that the two hashes match, if not, throw exception
+               check_match = bcrypt.checkpw(password, hashed_password)
             7) create session for this user, return user object by using getUserByCookie
         '''
     
