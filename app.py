@@ -1,6 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
+from flask_mysqldb import MySQL
+import uuid
 
 app = Flask(__name__)
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '123'
+app.config['MYSQL_DB'] = 'csci430'
+app.config['MYSQL_HOST'] = 'localhost'
+mysql = MySQL(app)
 
 @app.route('/register')
 def register():
@@ -11,6 +18,22 @@ def register():
         # add mySQL stuff here
         print(username)
         print(password)
+        cur = mysql.connection.cursor()
+
+        # validate before inserting
+        cur.execute("SELECT * FROM user WHERE username = %s", [username])
+        rows = cur.fetchone()
+        cur.close()
+        if rows is not None:
+                res = make_response("fail signing up")
+                return res
+
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO user(password, username) VALUES (%s, %s)", (hash(username), username))
+        mysql.connection.commit()
+        cur.close()
+        res = make_response("signup succeed")
+        return res
 
 @app.route('/login')
 def login():
@@ -23,9 +46,18 @@ def login():
         print(password)
 
         # serve the user a cookie
+        res = make_response("Setting a cookie")
+        res.set_cookie('auth_cookie', uuid.uuid4(), max_age=60*30)
+        return res
 
 @app.route('/manage')
 def manage():
+        if not request.cookies.get('auth_cookie'):
+                # return unauth
+                pass
+        else:
+                # check auth
+                pass
         # get the action and amount
         action = request.args.get('action')
         amount = request.args.get('amount')
