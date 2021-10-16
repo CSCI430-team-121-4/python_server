@@ -1,10 +1,11 @@
+import hashlib
+
 from flask import Flask, request, jsonify, make_response
 from flask_mysqldb import MySQL
 import uuid
-
 app = Flask(__name__)
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123'
+app.config['MYSQL_PASSWORD'] = '84823832'
 app.config['MYSQL_DB'] = 'csci430'
 app.config['MYSQL_HOST'] = 'localhost'
 mysql = MySQL(app)
@@ -16,11 +17,7 @@ def register():
         password = request.args.get('pass')
 
         # add mySQL stuff here
-        print(username)
-        print(password)
         cur = mysql.connection.cursor()
-
-        # validate before inserting
         cur.execute("SELECT * FROM user WHERE username = %s", [username])
         rows = cur.fetchone()
         cur.close()
@@ -29,7 +26,7 @@ def register():
                 return res
 
         cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO user(password, username) VALUES (%s, %s)", (hash(username), username))
+        cur.execute("INSERT INTO user(password, username) VALUES (%s, %s)", (hashing(password), username))
         mysql.connection.commit()
         cur.close()
         res = make_response("signup succeed")
@@ -42,12 +39,26 @@ def login():
         password = request.args.get('pass')
 
         # add mySQL stuff here
-        print(username)
-        print(password)
+        cur = mysql.connection.cursor()
+        # cur.execute("SELECT * FROM user WHERE username = %s AND password = %s", (username, hash(password)))
+        cur.execute("SELECT * FROM user WHERE password = %s", [hashing(password)])
+        print(password,hashing(password))
+        row = cur.fetchone()
+        cur.close()
+        print("row",row[0])
+        if row is None:
+                res = make_response("fail logging in")
+                return res
 
         # serve the user a cookie
-        res = make_response("Setting a cookie")
-        res.set_cookie('auth_cookie', uuid.uuid4(), max_age=60*30)
+        res = make_response("logging in succeeds")
+        sessionId = uuid.uuid4()
+
+        res.set_cookie('auth_cookie', str(sessionId), max_age=60*30*6000)
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO sessions(session_id, user_id) VALUES (%s, %s)", (str(sessionId), row[0]))
+        mysql.connection.commit()
+        cur.close()
         return res
 
 @app.route('/manage')
@@ -86,10 +97,20 @@ def manage():
 
 @app.route('/logout')
 def logout():
-        print("Logged out")
-        # add mySQL stuff here
         # delete user cookie
-
+        sessionId = request.cookies.get('auth_cookie')
+        print(request.cookies)
+        print(sessionId)
+        if sessionId is not None:
+                cur = mysql.connection.cursor()
+                cur.execute("DELETE FROM sessions WHERE session_id = %s", [str(sessionId)])
+                mysql.connection.commit()
+                cur.close()
+        res = make_response("log out succeeds")
+        return res
 
 context = ('cert.pem', 'key.pem')
 app.run(debug=False, ssl_context=context, host='0.0.0.0', port=1)
+
+def hashing(password):
+        return hashlib.md5(password.encode('utf-8')).hexdigest()
