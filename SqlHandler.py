@@ -11,7 +11,7 @@ import json
 # port = portnumber here, password = passw here 
 # ssl_verify_cert = True
 
-class Sqlhandler:
+class SqlHandler:
     conn = None 
     config = None
     def __init__(self, file = 'sqlconfig.txt'):
