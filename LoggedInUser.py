@@ -1,7 +1,7 @@
 class LoggedInUser:
     username = None
     balance = 0
-    hashedCookie = None
+    sessionID = None
     ipaddress = None
 
     def __init__(self, hashedCookieVal, username, balance, ipaddress):
