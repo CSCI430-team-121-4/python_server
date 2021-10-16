@@ -68,7 +68,7 @@ class SqlHandler:
             3) if they are equal, the user is logged in, otherwise throw an exception
         '''
     
-    def getUserByCookie(self, StringInsideCookie, ipaddress):
+    def getUserByCookie(self, stringInsideCookie, ipaddress):
         '''
             1) Get row by hashed session id and non-hashed ip address
             2) If there is no such row, throw an exception
