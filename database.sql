@@ -1,5 +1,7 @@
+use csci430;
+
 CREATE TABLE IF NOT EXISTS `user` (
-    `user_id` INTEGER PRIMARY KEY AUTOINCREMENT, 
+    `user_id` INTEGER PRIMARY KEY AUTO_INCREMENT, 
     `password` VARCHAR(255), 
     `username` VARCHAR(255) UNIQUE, 
     `createdAt` DATETIME NOT NULL, 
