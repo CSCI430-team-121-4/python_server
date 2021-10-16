@@ -1,5 +1,6 @@
 import mysql
 import json
+import bcrypt
 
 
 # Make a json file named sqlconfig.txt, it will have these values
@@ -24,11 +25,25 @@ class SqlHandler:
     def register(self, username, password, ipaddress):
         '''
             1) check if username already exists, if it does throw exception
+            try:
+                cursor = self.cursor()
+                query = "SELECT username FROM user WHERE username = " + username
+                cursor.execute(query)
+                rows = cursor.fetchall()
             2) if not, generate salt
             3) add salt to password
             4) hash password
+                if rows > 0:
+                    raise Exception("Data already exists")
+                hashedpw = bcrypt.hashpw(password, bcrypt.gensalt(12))
             5) add username, hashed password, non-hashed ip to database
+                query1 = "INSERT INTO user(username, password, ipaddress) VALUES (%s,%s,%s)"
+                insdata = (username, hashedpw, ipaddress)
+                cursor.execute(query1, insdata)
             6) create session for this user, return user object by using getUserByCookie
+                getUserByCookie(self, ~, ipaddress)
+            except:
+            printf("Data already exists")
         '''
 
     def login(self, username, password, ipaddress):
