@@ -3,6 +3,7 @@ use csci430;
 
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `sessions`;
+DROP TABLE IF EXISTS `bank_account`;
 
 CREATE TABLE IF NOT EXISTS `user` (
     `user_id` INTEGER PRIMARY KEY AUTO_INCREMENT,
