@@ -4,7 +4,7 @@
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 # install pip
-sudo apt install python-pip
+sudo apt install python-pip3
 
 # install mysql
 sudo apt-get install mysql-server
