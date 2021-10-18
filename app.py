@@ -5,7 +5,7 @@ import uuid
 
 app = Flask(__name__)
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '111'
+app.config['MYSQL_PASSWORD'] = 'ZEw2Uk2+merS@uQa'
 app.config['MYSQL_DB'] = 'csci430'
 app.config['MYSQL_HOST'] = 'localhost'
 mysql = MySQL(app)
