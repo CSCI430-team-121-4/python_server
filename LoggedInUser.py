@@ -8,4 +8,4 @@ class LoggedInUser:
         self.username = username
         self.balance = balance
         self.ipaddress = ipaddress
-        self.hashedCookie = hashedCookieVal
+        self.sessionID = hashedCookieVal
