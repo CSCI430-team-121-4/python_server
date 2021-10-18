@@ -7,7 +7,6 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 sudo apt install python-pip3
 
 # install mysql
-sudo apt-get install mysql-server
 sudo apt install libmysqlclient-dev
 
 # install flask and mysql Python libraries
