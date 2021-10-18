@@ -22,3 +22,15 @@ y
 # reload privilege tables now
 y
 # ALL DONE! now adjust user authentification and Privileges
+
+# switch to Python 3
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+# install pip
+sudo apt install python-pip3
+
+# install mysql
+sudo apt install libmysqlclient-dev
+
+# install flask and mysql Python libraries
+sudo pip3 install -i https://fbsd-build.isi.deterlab.net/pypi/web/simple flask mysql flask_mysqldb

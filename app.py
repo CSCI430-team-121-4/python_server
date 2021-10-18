@@ -53,7 +53,6 @@ def login():
         cur.execute("SELECT * FROM user WHERE password = %s", [hashing(password)])
         row = cur.fetchone()
         cur.close()
-        print("row",row[0])
         if row is None:
                 res = make_response("fail logging in")
                 return res
